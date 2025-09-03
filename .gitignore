@@ -5,3 +5,4 @@
 /.idea/
 default.yaml
 **/tmp*
+/work_data/
