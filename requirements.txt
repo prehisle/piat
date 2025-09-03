@@ -1,0 +1,2 @@
+git+https://gitee.com/prehisle_admin/olymat.git
+git+https://gitee.com/prehisle_admin/olymat_comm.git
