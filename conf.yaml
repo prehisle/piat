@@ -1,4 +1,8 @@
 main:
-  #  http_proxy: null
+  http_proxy: null
   #  http_proxy: "http://127.0.0.1:8888" # 开启代理
-  work_data_dir: './work_data'
+  # work_data_dir: './work_data'
+
+plugins:
+  in_end: [ ] # 输入插件
+  out_end: [ ] # 输出插件
