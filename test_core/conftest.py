@@ -1,15 +1,9 @@
 import pytest
-import pytest_asyncio
 
 from olymat.utils.ctx_helper import make_default_ctx
-from olymat.utils.ssh_helper import init_ssh_fixtures
 
 from .config import get_g_conf
 from .browser_helper import SimpleBrowserAuth
-
-init_ssh_fixtures(globals(), get_g_conf().env.servers, groups=[
-    ["all", ["main", "pkgs"]],
-])
 
 @pytest.fixture(scope="session")
 def cfg():
@@ -22,16 +16,22 @@ def ctx():
 
 
 # 新增浏览器fixture
-@pytest_asyncio.fixture
-async def logged_in_page(request, cfg):
-    site = request.param['site']
-    user = request.param['user']
-    
-    auth = SimpleBrowserAuth(cfg)
-    page, context = await auth.get_logged_in_page(site, user)
-    
+@pytest.fixture(scope="session")
+def auth(cfg):
+    auth = SimpleBrowserAuth(cfg.browser)
+    auth.start_playwright()
+    yield auth
+    auth.close_playwright()
+
+
+@pytest.fixture(scope="session")
+def page_user_a(auth):
+    page, context = auth.get_logged_in_page('baidu', 'user_a')
     yield page
-    
-    # 清理资源
-    await context.close()
-    await auth.close_playwright()
+    context.close()
+
+@pytest.fixture(scope="session")
+def page_user_b(auth):
+    page, context = auth.get_logged_in_page('baidu', 'user_b')
+    yield page
+    context.close()

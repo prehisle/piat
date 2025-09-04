@@ -1,6 +1,6 @@
-# 浏览器自动化配置 - 极简版
+# 浏览器自动化配置 - 支持多账号
 browser:
-  # 网站配置 - 只保留必要信息
+  # 网站配置
   sites:
     baidu:
       login_url: "https://www.baidu.com/"
