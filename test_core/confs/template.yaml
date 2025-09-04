@@ -1,0 +1,8 @@
+# 浏览器自动化配置 - 极简版
+browser:
+  # 网站配置 - 只保留必要信息
+  sites:
+    baidu:
+      login_url: "https://www.baidu.com/"
+      success_selector: "#s-top-username"
+    

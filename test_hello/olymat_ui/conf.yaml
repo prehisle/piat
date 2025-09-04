@@ -1,4 +1,0 @@
-main_name: 'olymat hello'
-func_list:
-  - name: "hello"
-    cmd_param: "test_hello/hello_test.py"
