@@ -35,7 +35,6 @@ def scroll_page_incrementally(page, scroll_increment=200, pause_time=2):
                 break
 
 
-
 def test_go(page):
     page.goto("https://linux.do/unread")
     time.sleep(2)
@@ -48,8 +47,10 @@ def test_go(page):
     all_hrefs = set(all_hrefs)
     for url in all_hrefs:
         if not url:
+            logging.warning(f"无效的URL {url}")
             continue
         logging.info(url)
         page.goto("https://linux.do" + url, timeout=30000)
         time.sleep(1)
         scroll_page_incrementally(page, scroll_increment=500, pause_time=1.5)
+    logging.info("搞完了!")
