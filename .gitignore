@@ -7,4 +7,4 @@ default.yaml
 **/tmp*
 /work_data/
 # 忽略登录状态文件，但保留目录结构
-/auth/*.json
+/auth_data/*.json
