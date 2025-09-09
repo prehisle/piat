@@ -1,0 +1,3 @@
+_import: comm/comm.yaml
+user:
+  name: "prehisle" # 你的账号, 用于登录状态持久化文件命名, 不填也无碍

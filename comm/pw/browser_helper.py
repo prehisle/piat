@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import sys
 from pathlib import Path
@@ -8,9 +9,10 @@ from playwright.sync_api import sync_playwright
 
 
 class SimpleBrowserAuth:
-    def __init__(self, browser_config):
-        self.config = browser_config
-        self.auth_dir = Path("./auth_data")
+    def __init__(self, pw_conf, sites_conf):
+        self.sites_conf = sites_conf
+        self.pw_conf = pw_conf
+        self.auth_dir = Path("auth_data").absolute()
         self.auth_dir.mkdir(exist_ok=True)
         self.playwright = None
         self.browser = None
@@ -24,7 +26,7 @@ class SimpleBrowserAuth:
             # VSCode 测试环境或非交互式环境使用无头模式
             # headless = not self._is_interactive_env()
             headless = False
-            self.browser = self.playwright.chromium.launch(**self.config.launch_conf)
+            self.browser = self.playwright.chromium.launch(**self.pw_conf.launch)
     
     def close_playwright(self):
         if self.browser:
@@ -44,9 +46,11 @@ class SimpleBrowserAuth:
         """
         # 如果有状态文件，尝试恢复状态
         if auth_file and auth_file.exists():
-            context = self.browser.new_context(storage_state=str(auth_file))
+            logging.info(f"恢复登录状态 {auth_file}...")
+            context = self.browser.new_context(storage_state=str(auth_file), **self.pw_conf.context)
         else:
-            context = self.browser.new_context()
+            logging.info(f"创建新的登录状态 {auth_file}...")
+            context = self.browser.new_context(**self.pw_conf.context)
         
         page = context.new_page()
         page.goto(site_config['login_url'])
@@ -60,13 +64,14 @@ class SimpleBrowserAuth:
             return None, None, False  # 登录失败
     
     def get_logged_in_page(self, site, user):
-        site_config = self.config.sites[site]
+        site_config = self.sites_conf[site]
         auth_file = self.get_auth_file(site, user)
 
         print(f"\n正在检测登录状态 {site}-{user}，判断登录成功后会自动继续（5分钟超时）...")
         page, context, success = self._create_and_verify_login(site_config, auth_file)
         if success:
             # 保存登录状态
+            logging.info(f"保存登录状态 {auth_file}...")
             context.storage_state(path=str(auth_file))
             return page, context
         else:
@@ -75,7 +80,7 @@ class SimpleBrowserAuth:
 
 @pytest.fixture(scope="session")
 def auth_page(cfg):
-    auth = SimpleBrowserAuth(cfg.browser)
+    auth = SimpleBrowserAuth(cfg.pw, cfg.sites)
     auth.start_playwright()
     yield auth
     auth.close_playwright()

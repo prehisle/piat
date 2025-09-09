@@ -1,0 +1,21 @@
+sites:
+  linux_do:
+    login_url: "https://linux.do"
+    success_selector: "#toggle-current-user"
+
+pw:
+  launch:
+    headless: false
+    args:
+      - '--start-maximized'
+      - "--disable-blink-features=AutomationControlled"
+      - "--no-sandbox"
+      - "--disable-infobars"
+#      - "--window-position=-1536,370"
+#      - "--window-position=-1536,0" # 家
+#      - "--window-size=1536,800" # 公司
+#    proxy:
+#      server: "http://127.0.0.1:10809"
+#      timeout: 10000
+  context:
+    no_viewport: true

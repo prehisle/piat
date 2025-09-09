@@ -1,0 +1,4 @@
+main_name: 'L站自动化工具箱'
+func_list:
+  - name: "已读帖子刷刷乐"
+    cmd_param: "test_linux_do/test_read_posts.py"
